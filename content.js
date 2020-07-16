@@ -6,15 +6,15 @@ function copyPrDescription() {
     return;
   }
 
-  const prNumberEl = document.querySelector(".gh-header-title .gh-header-number");
-  if (!prNumberEl) {
-    console.warn("squashed-merge-message: Failed to find PR Number");
+  const prNumberNl = document.querySelectorAll(".gh-header-title .gh-header-number");
+  if (prNumberNl.length !== 1) {
+    console.warn(`squashed-merge-message: Found ${prNumberNl.length} PR number elements`);
     return;
   }
 
-  const prBodyEl = document.querySelector('.comment-form-textarea[name="pull_request[body]"]');
-  if (!prBodyEl) {
-    console.warn("squashed-merge-message: Failed to find PR Body");
+  const prBodyNl = document.querySelectorAll('.comment-form-textarea[name="pull_request[body]"]');
+  if (prBodyNl.length !== 1) {
+    console.warn(`squashed-merge-message: Found ${prBodyNl.length} PR Body elements`);
     return;
   }
 
@@ -30,25 +30,26 @@ function copyPrDescription() {
     return;
   }
 
-  const commitTitle = `${prTitleEl.value} (${prNumberEl.textContent})`;
-  const commitBody = prBodyEl.textContent;
+  const commitTitle = `${prTitleEl.value} (${prNumberNl.textContent})`;
+  const commitBody = prBodyNl[0].textContent;
 
   titleField.value = commitTitle;
   messageField.value = commitBody;
 }
 
 function addMergeListeners() {
+  if (!window.location.pathname.match("/pull/[0-9]+$")) return;
   console.log("squashed-merge-message: adding listener");
-  const squashButton = document.querySelector('.merge-message .btn-group-squash');
-  const mergeButton = document.querySelector('.merge-message .btn-group-merge');
+  const squashButtonNl = document.querySelectorAll('.merge-message .btn-group-squash');
+  const mergeButtonNl = document.querySelectorAll('.merge-message .btn-group-merge');
 
-  if (squashButton) {
-    squashButton.addEventListener('click', copyPrDescription);
+  if (squashButtonNl.length === 1) {
+    squashButtonNl[0].addEventListener('click', copyPrDescription);
   } else {
     console.warn("squashed-merge-message: Couldn't find squash button");
   }
-  if (mergeButton) {
-    mergeButton.addEventListener('click', copyPrDescription);
+  if (mergeButtonNl.length === 1) {
+    mergeButtonNl[0].addEventListener('click', copyPrDescription);
   } else {
     console.warn("squashed-merge-message: couldn't find merge button");
   }
